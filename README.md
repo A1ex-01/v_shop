@@ -1,24 +1,6 @@
 # v_shop_manage
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+    使用组件库 elementUI
+        npm i element-ui -S
+        npm install babel-plugin-component -D
+    数据请求 axios
+        基准地址："https://api.naccl.top/vue/shop/api/private/v1/"

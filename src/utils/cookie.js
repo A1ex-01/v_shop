@@ -23,7 +23,7 @@ export function setCookie(key, val, time) {
 
 export function delCookie(key) {
     let cookies = getCookie(key);
-    console.log(cookies);
+    (cookies);
     if (cookies) {
         setCookie(key, null, -99);
     } else {

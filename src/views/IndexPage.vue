@@ -190,10 +190,10 @@ export default {
       this.$router.push("/login");
     },
     handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+      (key, keyPath);
     },
     handleClose(key, keyPath) {
-      console.log(key, keyPath);
+      (key, keyPath);
     },
   },
 };

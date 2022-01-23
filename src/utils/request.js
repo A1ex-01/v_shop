@@ -13,7 +13,7 @@ ins.interceptors.request.use((config) => {
     config.headers.common['Authorization'] = getCookie('token');
     return config;
 },(error)=>{
-    console.log("error");
+    ("error");
     return Promise.reject(error);
 });
 

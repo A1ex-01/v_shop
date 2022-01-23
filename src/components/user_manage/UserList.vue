@@ -172,15 +172,15 @@ export default {
       this.resetInfoBtn = true;
     },
     deleteUser(val) {
-      console.log("deleteUser");
+      ("deleteUser");
       this.$store.dispatch("userManager/deleteUser", { id: val });
     },
     resetRole() {
-      console.log("resetRole");
+      ("resetRole");
     },
     quit() {
       this.resetInfoBtn = false;
-      console.log(1);
+      (1);
     },
     confirm() {
       this.resetInfoBtn = false;
@@ -195,7 +195,7 @@ export default {
       }
     },
     currChange(val) {
-      console.log(val);
+      (val);
       this.$store.commit("userManager/changePagenum", { result: val });
       this.$store.dispatch("userManager/updateInfoList");
     },
@@ -207,7 +207,7 @@ export default {
     },
     addConfirm() {
       this.addUserBtn = false;
-      console.log(this.addUserInfo);
+      (this.addUserInfo);
       this.$store.dispatch("userManager/addUser", {
         username: this.addUserInfo.username,
         password: this.addUserInfo.pasw,

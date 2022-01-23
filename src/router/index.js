@@ -43,6 +43,10 @@ const routes = [
         component: () => import("../components/goods_manage/GoodsList"),
       },
       {
+        path: "goods/goods/:id",
+        component: () => import("../components/goods_manage/ResetGoods"),
+      },
+      {
         path: "goods/type",
         component: () => import("../components/goods_manage/GoodsType"),
       },

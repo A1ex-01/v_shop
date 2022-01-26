@@ -3,9 +3,7 @@
     <el-container style="height: 100%">
       <el-header class="header">
         <div class="left">
-          <img
-            src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-ba46750a-9919-4a60-8473-439618d2c95d/83c12dbd-280b-41f7-b4fb-1cbddd4f13a8.png"
-          />
+          <img src="../assets/logo.png" />
           <span>电商后台管理系统</span>
         </div>
         <div class="right">
@@ -21,7 +19,7 @@
             <i class="el-icon-s-fold"></i>
           </div>
           <el-menu
-            default-active="1-1"
+            :default-active="defaultIndex"
             class="el-menu-vertical-demo"
             @open="handleOpen"
             @close="handleClose"
@@ -37,7 +35,7 @@
               </template>
               <el-menu-item
                 index="1-1"
-                @click="goRouter('/welcome/userlist/userlist')"
+                @click="goRouter('/welcome/userlist/userlist', '1-1')"
                 >用户列表</el-menu-item
               >
             </el-submenu>
@@ -48,12 +46,12 @@
               >
               <el-menu-item
                 index="2-1"
-                @click="goRouter('/welcome/permiss/permiss')"
+                @click="goRouter('/welcome/permiss/permiss', '2-1')"
                 >角色列表</el-menu-item
               >
               <el-menu-item
                 index="2-2"
-                @click="goRouter('/welcome/permiss/role')"
+                @click="goRouter('/welcome/permiss/role', '2-2')"
                 >权限列表</el-menu-item
               >
             </el-submenu>
@@ -64,15 +62,17 @@
               >
               <el-menu-item
                 index="3-1"
-                @click="goRouter('/welcome/goods/goods')"
+                @click="goRouter('/welcome/goods/goods', '3-1')"
                 >商品列表</el-menu-item
               >
-              <el-menu-item index="3-2" @click="goRouter('/welcome/goods/type')"
+              <el-menu-item
+                index="3-2"
+                @click="goRouter('/welcome/goods/type', '3-2')"
                 >分类列表</el-menu-item
               >
               <el-menu-item
                 index="3-3"
-                @click="goRouter('/welcome/goods/typeinfo')"
+                @click="goRouter('/welcome/goods/typeinfo', '3-3')"
                 >商品分类</el-menu-item
               >
             </el-submenu>
@@ -83,7 +83,7 @@
               >
               <el-menu-item
                 index="4-1"
-                @click="goRouter('/welcome/order/order')"
+                @click="goRouter('/welcome/order/order', '4-1')"
                 >订单列表</el-menu-item
               >
             </el-submenu>
@@ -94,7 +94,7 @@
               >
               <el-menu-item
                 index="5-1"
-                @click="goRouter('/welcome/datas/datas')"
+                @click="goRouter('/welcome/datas/datas', '5-1')"
                 >数据报表</el-menu-item
               >
             </el-submenu>
@@ -127,6 +127,7 @@ export default {
       asideWidth: "201px",
       firstLab: "用户管理",
       secondLab: "用户列表",
+      defaultIndex: "1-1",
     };
   },
   computed: {
@@ -135,45 +136,76 @@ export default {
       return user;
     },
   },
-  mounted() {},
+  mounted() {
+    this.getIndex();
+  },
   methods: {
-    goRouter(val) {
+    getIndex() {
+      this.defaultIndex = sessionStorage.getItem("index");
+      this.firstLab = sessionStorage.getItem("firstLab");
+      this.secondLab = sessionStorage.getItem("secondLab");
+    },
+    goRouter(val, index) {
       switch (val) {
         case "/welcome/userlist/userlist":
-          this.firstLab = "用户管理";
-          this.secondLab = "用户列表";
+          sessionStorage.setItem("firstLab", "用户管理");
+          sessionStorage.setItem("secondLab", "用户列表");
+          sessionStorage.setItem("index", index);
           break;
         case "/welcome/permiss/permiss":
-          this.firstLab = "权限管理";
-          this.secondLab = "角色列表";
+          sessionStorage.setItem("firstLab", "权限管理");
+          sessionStorage.setItem("secondLab", "角色列表");
+          sessionStorage.setItem("index", index);
+          this.getIndex();
+
           break;
         case "/welcome/permiss/role":
-          this.firstLab = "权限管理";
-          this.secondLab = "权限列表";
+          sessionStorage.setItem("firstLab", "权限管理");
+          sessionStorage.setItem("secondLab", "权限列表");
+          sessionStorage.setItem("index", index);
+          this.getIndex();
+
           break;
         case "/welcome/goods/goods":
-          this.firstLab = "商品管理";
-          this.secondLab = "商品列表";
+          sessionStorage.setItem("firstLab", "商品管理");
+          sessionStorage.setItem("secondLab", "商品列表");
+          sessionStorage.setItem("index", index);
+          this.getIndex();
+
           break;
         case "/welcome/goods/type":
-          this.firstLab = "商品管理";
-          this.secondLab = "分类列表";
+          sessionStorage.setItem("firstLab", "商品管理");
+          sessionStorage.setItem("secondLab", "分类列表");
+          sessionStorage.setItem("index", index);
+          this.getIndex();
+
           break;
         case "/welcome/goods/typeinfo":
-          this.firstLab = "商品管理";
-          this.secondLab = "商品分类";
+          sessionStorage.setItem("firstLab", "商品管理");
+          sessionStorage.setItem("secondLab", "商品分类");
+          sessionStorage.setItem("index", index);
+          this.getIndex();
+
           break;
         case "/welcome/order/order":
-          this.firstLab = "订单管理";
-          this.secondLab = "订单列表";
+          sessionStorage.setItem("firstLab", "订单管理");
+          sessionStorage.setItem("secondLab", "订单列表");
+          sessionStorage.setItem("index", index);
+          this.getIndex();
+
           break;
         case "/welcome/datas/datas":
-          this.firstLab = "数据统计";
-          this.secondLab = "数据报表";
+          sessionStorage.setItem("firstLab", "数据统计");
+          sessionStorage.setItem("secondLab", "数据报表");
+          sessionStorage.setItem("index", index);
+          this.getIndex();
+
           break;
         default:
-          this.firstLab = "用户管理";
-          this.secondLab = "用户列表";
+          sessionStorage.setItem("firstLab", "用户管理");
+          sessionStorage.setItem("secondLab", "用户列表");
+          sessionStorage.setItem("index", index);
+          this.getIndex();
       }
       this.$router.push(val);
     },
@@ -190,10 +222,10 @@ export default {
       this.$router.push("/login");
     },
     handleOpen(key, keyPath) {
-      (key, keyPath);
+      key, keyPath;
     },
     handleClose(key, keyPath) {
-      (key, keyPath);
+      key, keyPath;
     },
   },
 };

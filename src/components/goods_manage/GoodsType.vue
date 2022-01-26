@@ -13,7 +13,7 @@
       <span>选择商品分类：</span>
       <el-cascader
         :props="{ value: 'cat_id', label: 'cat_name', children: 'children' }"
-        :options="categories | format"
+        :options="allCategories | format"
         :show-all-levels="false"
         @change="nodeChange"
       >
@@ -38,29 +38,34 @@
                       v-for="(item, index) in scope.row.attr_vals.split(',')"
                       :key="index"
                       closable
-                      @close="handleClose(scope.row, 'only', item)"
+                      @close="handleClose(scope.row, 'many', item)"
                     >
                       {{ item }}
                     </el-tag>
                   </template>
-                  <template v-else>
+                  <template
+                    v-if="
+                      scope.row.attr_vals.indexOf(',') == -1 &&
+                      scope.row.attr_vals
+                    "
+                  >
                     <el-tag
                       style="margin: 0 15px 10px 15px"
-                      v-for="(item, index) in scope.row.attr_vals"
+                      v-for="(item, index) in scope.row.attr_vals.split()"
                       :key="index"
                       closable
-                      @close="handleClose(scope.row, 'only', item)"
+                      @close="handleClose(scope.row, 'many', item)"
                     >
                       {{ item }}
                     </el-tag>
                   </template>
                   <el-input
                     class="input-new-tag"
-                    v-if="inputVisible"
+                    v-if="scope.row.attr_id == attr_id"
                     v-model="inputValue"
                     ref="saveTagInput"
                     size="small"
-                    @blur="handleInputConfirm(scope.row, 'only')"
+                    @blur="handleInputConfirm(scope.row, 'many')"
                   >
                   </el-input>
                   <el-button
@@ -68,7 +73,7 @@
                     style="margin: 0 15px 10px 15px"
                     class="button-new-tag"
                     size="small"
-                    @click="addTag"
+                    @click="addTag(scope.row)"
                     >+ New Tag</el-button
                   >
                 </template>
@@ -127,7 +132,7 @@
                   <template v-else>
                     <el-tag
                       style="margin: 0 15px 10px 15px"
-                      v-for="(item, index) in scope.row.attr_vals"
+                      v-for="(item, index) in scope.row.attr_vals.split()"
                       :key="index"
                       closable
                       @close="handleClose(scope.row, 'only', item)"
@@ -137,7 +142,7 @@
                   </template>
                   <el-input
                     class="input-new-tag"
-                    v-if="inputVisible"
+                    v-if="scope.row.attr_id == attr_id"
                     v-model="inputValue"
                     ref="saveTagInput"
                     size="small"
@@ -149,7 +154,7 @@
                     style="margin: 0 15px 10px 15px"
                     class="button-new-tag"
                     size="small"
-                    @click="addTag"
+                    @click="addTag(scope.row)"
                     >+ New Tag</el-button
                   >
                 </template>
@@ -259,6 +264,7 @@ export default {
       valueStaticName: "",
       valueActiveName: "",
       valueInfo: "",
+      attr_id: "",
     };
   },
   filters: {
@@ -281,17 +287,19 @@ export default {
   computed: {
     ...mapState({
       categories: (state) => state.goods.categories,
+      allCategories: (state) => state.goods.allCategories,
       manyAttr: (state) => state.goods.manyAttr,
       onlyAttr: (state) => state.goods.onlyAttr,
     }),
   },
   mounted() {
-    this.getCategoriesList();
+    this.getAllCategoriesList();
   },
 
   methods: {
     ...mapActions("goods", [
       "getCategoriesList",
+      "getAllCategoriesList",
       "getManyAttr",
       "getOnlyAttr",
       "deleteAttr",
@@ -299,7 +307,7 @@ export default {
       "addManyValue",
       "addOnlyValue",
       "addMyStaticValue",
-      "addMyActiveValue"
+      "addMyActiveValue",
     ]),
     nodeChange(val) {
       this.getManyAttr({ result: val[2] });
@@ -311,29 +319,47 @@ export default {
       return val++;
     },
     handleClose(val, sels, item) {
-      let attr = val.attr_vals;
-      let temp = [];
+      // let attr = val.attr_vals;
+      // let temp = [];
+      // if (attr.indexOf(",") != -1) {
+      //   attr = attr.split(",");
+      //   for (let i in attr) {
+      //     if (i != attr.indexOf(item)) {
+      //       temp.push(attr[i]);
+      //     }
+      //   }
+      // } else {
+      //   temp = "";
+      // }
+      // val.attr_vals = temp;
 
-      if (attr.indexOf(",") != -1) {
-        attr = attr.split(",");
-        for (let i in attr) {
-          if (i != attr.indexOf(item)) {
-            temp.push(attr[i]);
+      //传入值处理
+      let a = val.attr_vals;
+      let arr = [];
+      if (a) {
+        if (a.indexOf(",") != -1) {
+          a = a.split(",");
+          for (let i in a) {
+            if (a[i] != item) {
+              arr.push(a[i]);
+            }
           }
+          val.attr_vals = arr.toString();
+        } else {
+          a = "";
+          val.attr_vals = a;
         }
-      } else {
-        temp = "";
       }
-      val.attr_vals = temp;
       const obj = {
         cat_id: val.cat_id,
         attr_id: val.attr_id,
         info: {
           attr_name: val.attr_name,
           attr_sel: sels,
-          attr_vals: temp.toString(),
+          attr_vals: val.attr_vals,
         },
       };
+      console.log(obj);
       this.deleteVals(obj);
     },
     deleteMyAttr(val) {
@@ -343,7 +369,7 @@ export default {
       console.log(val);
       this.valueInfo = val;
       if (this.cat_id) {
-          console.log(this.valueInfo.attr_sel)
+        console.log(this.valueInfo.attr_sel);
         if (this.valueInfo.attr_sel == "only") {
           this.valueStaticName = this.valueInfo.attr_name;
           this.resetStaticName = true;
@@ -359,14 +385,15 @@ export default {
         });
       }
     },
-    addTag() {
+    addTag(val) {
+      this.attr_id = val.attr_id;
       //   this.inputVisible = true;
       //   this.$nextTick(() => {
       //     this.$refs.saveTagInput.$refs.input.focus();
       //   });
     },
-    handleInputConfirm() {
-      //   this.inputVisible = false;
+    handleInputConfirm(val, type) {
+      console.log(this.inputValue, val, type);
       //   let attr = val.attr_vals;
       //   if (attr.indexOf(",") != -1) {
       //     attr = attr.split(",");
@@ -374,19 +401,36 @@ export default {
       //   } else {
       //     attr.split().push(this.inputValue)
       //   }
-      //   const obj = {
-      //     cat_id: val.cat_id,
-      //     attr_id: val.attr_id,
-      //     info: {
-      //       attr_name: val.attr_name,
-      //       attr_sel: sels,
-      //       attr_vals: attr.toString(),
-      //     },
-      //   };
+      let obj;
+      if (val.attr_vals) {
+        obj = {
+          cat_id: val.cat_id,
+          attr_id: val.attr_id,
+          info: {
+            attr_name: val.attr_name,
+            attr_sel: type.split(),
+            attr_vals: val.attr_vals + "," + this.inputValue,
+          },
+        };
+        val.attr_vals = val.attr_vals + "," + this.inputValue;
+      } else {
+        obj = {
+          cat_id: val.cat_id,
+          attr_id: val.attr_id,
+          info: {
+            attr_name: val.attr_name,
+            attr_sel: type.split(),
+            attr_vals: this.inputValue,
+          },
+        };
+        val.attr_vals = this.inputValue;
+      }
       //   val.attr_vals = attr.toString();
-      //   this.deleteVals(obj);
+      this.deleteVals(obj);
       // console.log(obj,val.attr_vals)
-      // this.inputValue=""
+      this.inputValue = "";
+      this.inputVisible = false;
+      this.attr_id = "";
     },
     addStaticValue() {
       if (this.cat_id) {
@@ -460,7 +504,7 @@ export default {
       }
     },
     confirmChangeActiveName() {
-              if (this.valueActiveName) {
+      if (this.valueActiveName) {
         this.addMyActiveValue({
           id: this.valueInfo.cat_id,
           attrId: this.valueInfo.attr_id,

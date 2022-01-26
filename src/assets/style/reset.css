@@ -49,3 +49,6 @@ table {
 html,body,#app{
     height: 100%;
 }
+th>.cell{
+	font-weight: bold;
+}

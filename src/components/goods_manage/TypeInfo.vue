@@ -173,7 +173,7 @@
                 children: 'children',
                 checkStrictly: true,
               }"
-              :options="categories | format"
+              :options="allCategories | format"
               :show-all-levels="false"
               @change="nodeChange"
               v-if="categories"
@@ -226,16 +226,18 @@ export default {
   },
   mounted() {
     this.getCategoriesList();
+    this.getAllCategoriesList();
   },
   computed: {
     ...mapState({
       categories: (state) => state.goods.categories,
       catPagenum: (state) => state.goods.catPagenum,
-      catTotal: (state) => state.goods.catTotal
+      catTotal: (state) => state.goods.catTotal,
+      allCategories: (state) => state.goods.allCategories
     }),
   },
   methods: {
-    ...mapActions("goods", ["getCategoriesList", "deleteType", "updateType","addTypeLevel"]),
+    ...mapActions("goods", ["getCategoriesList", "deleteType", "updateType","addTypeLevel","getAllCategoriesList"]),
     indexMethod(val) {
       val++;
       return val;

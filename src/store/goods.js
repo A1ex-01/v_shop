@@ -12,7 +12,8 @@ export default {
         manyAttr: [],
         onlyAttr: [],
         catPagenum:1,
-        catTotal:0
+        catTotal:0,
+        allCategories:""
     },
     mutations: {
         getGoodsList(state, payload) {
@@ -28,6 +29,9 @@ export default {
         getCategories(state, payload) {
             state.categories = payload.result.result
             state.catTotal = payload.result.total
+        },
+        getAllCategories(state, payload) {
+            state.allCategories = payload.result.result
         },
         getMyManyAttr(state, payload) {
             state.manyAttr = payload.result
@@ -103,6 +107,23 @@ export default {
                 Message.error(res.data.meta.msg)
             }
         },
+        async getAllCategoriesList({ commit }) {
+            const res = await request({
+                url: "categories",
+                method: "get",
+                data: {
+                    pagenum: 1,
+                    pagesize: 30
+                }
+            })
+            if (res.data.meta.status == 200) {
+                console.log(res.data.data)
+                commit("getAllCategories", { result: res.data.data })
+                Message.success(res.data.meta.msg)
+            } else {
+                Message.error(res.data.meta.msg)
+            }
+        },
         async getManyAttr({ commit }, payload) {
             const res = await request({
                 url: "categories/" + payload.result + "/attributes",
@@ -153,9 +174,7 @@ export default {
                 data: payload.info
             })
             if (res.data.meta.status == 200) {
-                console.log(dispatch);
-                // dispatch("getOnlyAttr",{result:payload.cat_id})
-                // dispatch("getManyAttr",{result:payload.cat_id})
+                console.log(dispatch)
                 Message.success(res.data.meta.msg)
             } else {
                 Message.error(res.data.meta.msg)

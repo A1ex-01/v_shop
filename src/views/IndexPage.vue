@@ -141,9 +141,9 @@ export default {
   },
   methods: {
     getIndex() {
-      this.defaultIndex = sessionStorage.getItem("index");
-      this.firstLab = sessionStorage.getItem("firstLab");
-      this.secondLab = sessionStorage.getItem("secondLab");
+      this.defaultIndex = sessionStorage.getItem("index") || '1-1';
+      this.firstLab = sessionStorage.getItem("firstLab") || '用户管理';
+      this.secondLab = sessionStorage.getItem("secondLab") || '用户列表';
     },
     goRouter(val, index) {
       switch (val) {

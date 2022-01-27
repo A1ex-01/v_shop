@@ -172,15 +172,31 @@ export default {
       this.resetInfoBtn = true;
     },
     deleteUser(val) {
-      ("deleteUser");
-      this.$store.dispatch("userManager/deleteUser", { id: val });
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$store.dispatch("userManager/deleteUser", { id: val });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     resetRole() {
-      ("resetRole");
+              this.$notify({
+          title: '警告',
+          message: '服务端暂不提供该功能',
+          type: 'warning'
+        });
     },
     quit() {
       this.resetInfoBtn = false;
-      (1);
+      1;
     },
     confirm() {
       this.resetInfoBtn = false;
@@ -195,7 +211,7 @@ export default {
       }
     },
     currChange(val) {
-      (val);
+      val;
       this.$store.commit("userManager/changePagenum", { result: val });
       this.$store.dispatch("userManager/updateInfoList");
     },
@@ -207,7 +223,7 @@ export default {
     },
     addConfirm() {
       this.addUserBtn = false;
-      (this.addUserInfo);
+      this.addUserInfo;
       this.$store.dispatch("userManager/addUser", {
         username: this.addUserInfo.username,
         password: this.addUserInfo.pasw,

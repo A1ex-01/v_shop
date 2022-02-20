@@ -8,6 +8,8 @@ export function getCookie(key) {
         var arr = arrCookie[i].split("=");
         if (key == arr[0]) {
             tips = arr[1];
+            // token值格式 Bearer xxxxx
+            // 给token值Bearer后加空格
             tips = tips.slice(0, 6) + " " + tips.slice(6)
             break;
         }
